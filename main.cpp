@@ -2,17 +2,25 @@
 #include <vector>
 #include "syntax/lexer.h"
 #include "vm/chunk.h"
+#include "vm/vm.h"
 
 int main() {
   Chunk chunk;
-//  chunk.write(Opcode::return_);
-//  chunk.write(Opcode::constant);
-//  chunk.write(Opcode::multiply);
+
   chunk.write(Opcode::constant);
   auto index = chunk.add_constant(10.0);
   chunk.write_byte(index);
 
-  std::cout << "test";
+  chunk.write(Opcode::constant);
+  auto index2 = chunk.add_constant(10.0);
+  chunk.write_byte(index2);
+
+  chunk.write(Opcode::add);
+
+  VM vm;
+  vm.interpret(chunk);
+
+//  std::cout << "test";
 
 //  auto source = "let x = 10;";
 //

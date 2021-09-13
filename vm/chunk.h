@@ -15,6 +15,12 @@ public:
   void write_byte(std::uint8_t byte);
 
   std::uint8_t add_constant(Value value);
+
+  std::vector<std::uint8_t> get_code();
+
+  std::vector<Value> get_constants();
+
+  Value read_constant(uint8_t index);
 };
 
 #endif //CONCISE_CHUNK_H
