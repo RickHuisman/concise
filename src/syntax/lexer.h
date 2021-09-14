@@ -47,6 +47,8 @@ public:
       : token_type(token_type), source(source) {}
 };
 
+bool operator==(const Token &a, const Token &b);
+
 class Lexer {
   int current;
 
@@ -75,7 +77,9 @@ class Lexer {
   bool is_at_end();
 
 public:
-  std::vector<Token> lex(std::string s);
+  explicit Lexer(std::string source) : source(source), current(0) {}
+
+  std::vector<Token> lex();
 };
 
 #endif //CONCISE_LEXER_H

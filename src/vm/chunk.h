@@ -2,7 +2,7 @@
 #define CONCISE_CHUNK_H
 
 #include <vector>
-#include "../compiler/value.h"
+#include <compiler/value.h>
 #include "opcode.h"
 
 class Chunk {

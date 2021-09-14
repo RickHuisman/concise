@@ -1,12 +1,10 @@
 #include "lexer.h"
+#include <utility>
 #include <vector>
 
 using std::vector;
-using std::string;
 
-vector<Token> Lexer::lex(string s) {
-  source = s;
-
+vector<Token> Lexer::lex() {
   vector<Token> tokens;
   while (!is_at_end()) {
     Token token = scan_token();
@@ -135,4 +133,8 @@ char Lexer::peek() {
 
 bool Lexer::is_at_end() {
   return source[current] == '\0';
+}
+
+bool operator==(const Token &a, const Token &b) {
+  return a.token_type == b.token_type && a.source == b.source;
 }
