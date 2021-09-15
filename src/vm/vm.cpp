@@ -1,8 +1,25 @@
 #include <iostream>
+#include <sstream>
+#include <compiler/compiler.h>
 #include "vm.h"
 
-void VM::interpret(Chunk ch) {
-  chunk = ch;
+void VM::interpret(std::string source) {
+  // TODO: Use interpret_with_output.
+  auto fun = compile(source);
+
+  output = &std::cout;
+
+  chunk = fun.chunk;
+  ip = 0;
+  run();
+}
+
+void VM::interpret_with_output(std::string source, std::stringstream *buffer) {
+  auto fun = compile(source);
+
+  output = buffer;
+
+  chunk = fun.chunk;
   ip = 0;
   run();
 }
@@ -27,6 +44,9 @@ void VM::run() {
         break;
       case Opcode::divide:
         divide();
+        break;
+      case Opcode::print:
+        print();
         break;
     }
   }
@@ -58,6 +78,11 @@ void VM::divide() {
   auto b = pop();
   auto a = pop();
   push(a / b);
+}
+
+void VM::print() {
+  auto popped = pop();
+  *output << popped;
 }
 
 void VM::push(Value value) {

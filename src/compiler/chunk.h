@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <compiler/value.h>
-#include "opcode.h"
+#include "vm/opcode.h"
 
 class Chunk {
   std::vector<std::uint8_t> code;

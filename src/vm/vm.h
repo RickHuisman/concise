@@ -1,10 +1,12 @@
 #ifndef CONCISE_VM_H
 #define CONCISE_VM_H
 
-#include "chunk.h"
+#include "compiler/chunk.h"
 
 class VM {
 private:
+  std::ostream *output; // TODO: Fix.
+
   std::vector<Value> stack;
   Chunk chunk;
   std::uint8_t ip;
@@ -12,7 +14,10 @@ private:
   std::uint8_t read_byte();
 
 public:
-  void interpret(Chunk chunk); // TODO: Return interpret result.
+  void interpret(std::string source); // TODO: Return interpret result.
+
+  void interpret_with_output(std::string source, std::stringstream *buffer); // TODO: Return interpret result.
+
   void run();
 
   Chunk current_chunk();
@@ -32,6 +37,8 @@ public:
   void multiply();
 
   void divide();
+
+  void print();
 };
 
 #endif //CONCISE_VM_H

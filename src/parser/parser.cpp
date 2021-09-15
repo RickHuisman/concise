@@ -2,8 +2,8 @@
 #include <vector>
 #include "parser.h"
 
-std::vector<Expr*> Parser::parse() {
-  std::vector<Expr*> exprs;
+std::vector<Expr *> Parser::parse() {
+  std::vector<Expr *> exprs;
 
   while (has_next()) {
     if (check(TokenType::eof)) {  // TODO Hacky fix.
@@ -16,16 +16,14 @@ std::vector<Expr*> Parser::parse() {
   return exprs;
 }
 
-Expr* Parser::declaration() {
-  switch (peek_type()) {
-    case TokenType::let:
-      consume();
-      return declare_let();
-    default: return expr_statement();
-  }
+Expr *Parser::declaration() {
+  if (match(TokenType::let)) return declare_let();
+  if (match(TokenType::print)) return parse_print();
+
+  return expr_statement();
 }
 
-Expr* Parser::declare_let() {
+Expr *Parser::declare_let() {
   auto ident = consume(TokenType::identifier, "Expect identifier.");
   consume(TokenType::equal, "Expect '=' after identifier.");
 
@@ -34,17 +32,22 @@ Expr* Parser::declare_let() {
   return new LetAssignExpr(ident.source, initializer);
 }
 
-Expr* Parser::expr_statement() {
+Expr *Parser::parse_print() {
+  auto expr = expr_statement();
+  return new PrintExpr(expr);
+}
+
+Expr *Parser::expr_statement() {
   auto expr = expression();
   consume(TokenType::semicolon, "Expect ';' after expression.");
   return expr;
 }
 
-Expr* Parser::expression() {
+Expr *Parser::expression() {
   return parse_precedence(Precedence::assignment);
 }
 
-Expr* Parser::parse_precedence(int precedence) {
+Expr *Parser::parse_precedence(int precedence) {
   auto token = consume();
   auto prefix = rules[token.token_type].prefix;
 
@@ -64,12 +67,32 @@ Expr* Parser::parse_precedence(int precedence) {
   return left;
 }
 
-Expr* Parser::int_(Token token) {
-  auto value = atoi(token.source.c_str());
-  return new IntExpr(value);
+Expr *Parser::binary(Expr *left, Token token) {
+  Expr *right = parse_precedence(
+      rules[token.token_type].precedence + 1
+  );
+
+  BinaryOperator op;
+  if (token.token_type == TokenType::minus) op = BinaryOperator::subtract;
+  if (token.token_type == TokenType::plus) op = BinaryOperator::add;
+  if (token.token_type == TokenType::slash) op = BinaryOperator::divide;
+  if (token.token_type == TokenType::star) op = BinaryOperator::multiply;
+  if (token.token_type == TokenType::equal) op = BinaryOperator::subtract;
+  if (token.token_type == TokenType::bang_equal) op = BinaryOperator::bang_equal;
+  if (token.token_type == TokenType::greater) op = BinaryOperator::greater_than;
+  if (token.token_type == TokenType::greater_equal) op = BinaryOperator::greater_than_equal;
+  if (token.token_type == TokenType::less) op = BinaryOperator::less_than;
+  if (token.token_type == TokenType::less_equal) op = BinaryOperator::less_than_equal;
+
+  return new BinaryExpr(left, op, right);
 }
 
-Expr* Parser::parse_ident(Token token) {
+Expr *Parser::int_(Token token) {
+  auto value = atoi(token.source.c_str());
+  return new NumberExpr(value);
+}
+
+Expr *Parser::parse_ident(Token token) {
   auto ident = token.source;
 
   // Set let.

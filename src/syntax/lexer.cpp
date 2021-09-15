@@ -62,9 +62,8 @@ Token Lexer::scan_token() {
 }
 
 TokenType Lexer::identifier_type_from_str(string source) {
-  if (source == "let") {
-    return TokenType::let;
-  }
+  if (source == "let") return TokenType::let;
+  if (source == "print") return TokenType::print;
 
   return TokenType::identifier;
 }

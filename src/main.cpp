@@ -1,9 +1,13 @@
 #include <iostream>
 #include <vector>
+#include <sstream>
 #include "syntax/lexer.h"
-#include "vm/chunk.h"
+#include "compiler/chunk.h"
 #include "vm/vm.h"
 #include "parser/parser.h"
+#include "compiler/compiler.h"
+
+class com;
 
 int main() {
 //  Chunk chunk;
@@ -21,17 +25,6 @@ int main() {
 //  VM vm;
 //  vm.interpret(chunk);
 
-//  auto source = "let x = y;";
-//
-//  Lexer lexer;
-//  auto tokens = lexer.lex(source);
-////  for (const auto& tk : tokens) {
-////    std::cout << tk.source << "\n";
-////  }
-//
-//  Parser parser(tokens);
-//  auto exprs = parser.parse();
-
 //  auto tk1 = Token(TokenType::semicolon, ";");
 //  auto tk2 = Token(TokenType::identifier, ";");
 //
@@ -45,6 +38,15 @@ int main() {
 //
 //  Lexer lexer;
 //  auto tokens = lexer.lex(source);
+
+  auto source = "print 10 / 2;";
+
+  VM vm;
+
+//  std::stringstream buffer;
+  vm.interpret(source);
+
+//  std::cout << buffer.rdbuf();
 
   return 0;
 }

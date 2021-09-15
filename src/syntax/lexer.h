@@ -33,6 +33,7 @@ enum class TokenType {
   number,
 
   let,
+  print,
 
   error,
   eof,
