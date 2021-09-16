@@ -38,6 +38,10 @@ public:
 
   void divide();
 
+  void negate();
+
+  void not_();
+
   void print();
 };
 

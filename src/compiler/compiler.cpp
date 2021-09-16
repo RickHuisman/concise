@@ -1,9 +1,11 @@
 #include <syntax/lexer.h>
 #include <parser/parser.h>
+
+#include <utility>
 #include "compiler.h"
 
 Function compile(std::string source) {
-  Lexer lexer(source);
+  Lexer lexer(std::move(source));
   auto tokens = lexer.lex();
 
   Parser parser(tokens);

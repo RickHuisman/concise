@@ -14,6 +14,10 @@ Value operator*(const Value &a, const Value &b);
 
 Value operator/(const Value &a, const Value &b);
 
+Value operator-(const Value& a);
+
+Value operator!(const Value& a);
+
 std::ostream& operator<<(std::ostream& os, const Value & value);
 
 #endif //CONCISE_VALUE_H

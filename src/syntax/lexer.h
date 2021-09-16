@@ -2,6 +2,7 @@
 #define CONCISE_LEXER_H
 
 #include <string>
+#include <optional>
 
 using std::string;
 
@@ -34,6 +35,8 @@ enum class TokenType {
 
   let,
   print,
+  true_,
+  false_,
 
   error,
   eof,
@@ -55,7 +58,7 @@ class Lexer {
 
   std::string source;
 
-  Token scan_token();
+  std::optional<Token> scan_token();
 
   static TokenType identifier_type_from_str(std::string identifier);
 
@@ -81,6 +84,8 @@ public:
   explicit Lexer(std::string source) : source(source), current(0) {}
 
   std::vector<Token> lex();
+
+  bool check(char c);
 };
 
 #endif //CONCISE_LEXER_H

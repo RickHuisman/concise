@@ -1,6 +1,11 @@
 #include <iostream>
 #include "ast.h"
 
+void UnaryExpr::compile(Compiler *compiler) {
+  expr_->compile(compiler);
+  compiler->emit(Opcode::negate);
+}
+
 void BinaryExpr::compile(Compiler *compiler) {
   left_->compile(compiler);
   right_->compile(compiler);
@@ -29,6 +34,6 @@ void PrintExpr::compile(Compiler *compiler) {
   compiler->emit(Opcode::print);
 }
 
-void NumberExpr::compile(Compiler *compiler) {
+void LiteralExpr::compile(Compiler *compiler) {
   compiler->emit_constant(value);
 }

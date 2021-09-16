@@ -29,7 +29,9 @@ class Parser {
 
   Expr *declare_let();
 
-  Expr *int_(Token token);
+  Expr *int_(Token token); // TODO: Rename.
+
+  Expr *literal(Token token);
 
   Token consume();
 
@@ -60,7 +62,7 @@ class Parser {
   };
 
   std::map<TokenType, Parselet> rules{
-      {TokenType::minus,         {NULL, &Parser::binary,      Precedence::term}},
+      {TokenType::minus,         {&Parser::unary, &Parser::binary,      Precedence::term}},
       {TokenType::plus,          {NULL, &Parser::binary,      Precedence::term}},
       {TokenType::slash,         {NULL, &Parser::binary,      Precedence::factor}},
       {TokenType::star,          {NULL, &Parser::binary,      Precedence::factor}},
@@ -73,6 +75,8 @@ class Parser {
       {TokenType::number,        {&Parser::int_,        NULL, Precedence::none}},
       {TokenType::semicolon,     {NULL,                 NULL, Precedence::none}},
       {TokenType::identifier,    {&Parser::parse_ident, NULL, Precedence::none}},
+      {TokenType::true_,    {&Parser::literal, NULL, Precedence::none}},
+      {TokenType::false_,    {&Parser::literal, NULL, Precedence::none}},
   };
 
 public:
@@ -87,6 +91,8 @@ public:
   Expr *parse_ident(Token token);
 
   Expr *parse_print();
+
+  Expr *unary(Token token);
 
   Expr *binary(Expr *left, Token token);
 };

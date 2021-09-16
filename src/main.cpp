@@ -39,14 +39,14 @@ int main() {
 //  Lexer lexer;
 //  auto tokens = lexer.lex(source);
 
-  auto source = "print 10 / 2;";
+  auto source = "print true;";
 
   VM vm;
 
-//  std::stringstream buffer;
-  vm.interpret(source);
+  std::stringstream buffer;
+  vm.interpret_with_output(source, &buffer);
 
-//  std::cout << buffer.rdbuf();
+  std::cout << buffer.rdbuf();
 
   return 0;
 }

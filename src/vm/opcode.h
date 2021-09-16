@@ -10,6 +10,8 @@ enum class Opcode : std::uint8_t {
   subtract,
   multiply,
   divide,
+  negate,
+  not_,
   print,
 };
 

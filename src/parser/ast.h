@@ -13,6 +13,29 @@ public:
   virtual void compile(Compiler *compiler) = 0;
 };
 
+enum class UnaryOperator {
+  negate,
+  not_,
+};
+
+class UnaryExpr : public Expr {
+public:
+  explicit UnaryExpr(UnaryOperator op, Expr *expr)
+    : Expr(),
+      op_(op),
+      expr_(expr) {}
+
+  void compile(Compiler *compiler);
+
+  UnaryOperator op() const { return op_; }
+
+  Expr *expr() const { return expr_; }
+
+private:
+  UnaryOperator op_;
+  Expr *expr_;
+};
+
 enum class BinaryOperator {
   subtract,
   add,
@@ -92,12 +115,13 @@ struct PrintExpr : Expr {
   void compile(Compiler *compiler);
 };
 
-struct NumberExpr : Expr { // TODO: Create a Literal interface.
-  explicit NumberExpr(double v) {
+class LiteralExpr : public Expr {
+public:
+  explicit LiteralExpr(Value v) {
     value = v;
   };
 
-  double value;
+  Value value;
 
   void compile(Compiler *compiler);
 };

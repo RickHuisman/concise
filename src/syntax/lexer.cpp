@@ -1,20 +1,23 @@
 #include "lexer.h"
 #include <utility>
 #include <vector>
+#include <optional>
 
 using std::vector;
 
 vector<Token> Lexer::lex() {
   vector<Token> tokens;
   while (!is_at_end()) {
-    Token token = scan_token();
-    tokens.push_back(token);
+    auto token = scan_token();
+    if (token.has_value()) {
+      tokens.push_back(token.value());
+    }
   }
 
   return tokens;
 }
 
-Token Lexer::scan_token() {
+std::optional<Token> Lexer::scan_token() {
   skip_whitespace();
 
   if (is_at_end()) return make_token(TokenType::eof);
@@ -43,8 +46,19 @@ Token Lexer::scan_token() {
       return make_token(TokenType::minus);
     case '+':
       return make_token(TokenType::plus);
-    case '/':
+    case '/': {
+      // Ignore comments.
+      if (check('/')) {
+        // TODO: Cleanup.
+        while (peek() != '\n') {
+          advance();
+        }
+
+        return std::nullopt;
+      }
+
       return make_token(TokenType::slash);
+    }
     case '*':
       return make_token(TokenType::star);
     case '!':
@@ -55,7 +69,6 @@ Token Lexer::scan_token() {
       return make_token(match('=') ? TokenType::less_equal : TokenType::less);
     case '>':
       return make_token(match('=') ? TokenType::greater_equal : TokenType::greater);
-      // case '"': String(), TODO
   }
 
   return make_token(TokenType::error);
@@ -64,6 +77,8 @@ Token Lexer::scan_token() {
 TokenType Lexer::identifier_type_from_str(string source) {
   if (source == "let") return TokenType::let;
   if (source == "print") return TokenType::print;
+  if (source == "true") return TokenType::true_;
+  if (source == "false") return TokenType::false_;
 
   return TokenType::identifier;
 }
@@ -128,6 +143,14 @@ char Lexer::peek_next() {
 
 char Lexer::peek() {
   return is_at_end() ? '\0' : source[current];
+}
+
+bool Lexer::check(char c) {
+  if (!is_at_end()) {
+    return peek() == c;
+  }
+
+  return false;
 }
 
 bool Lexer::is_at_end() {

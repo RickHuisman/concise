@@ -67,6 +67,11 @@ Expr *Parser::parse_precedence(int precedence) {
   return left;
 }
 
+Expr *Parser::unary(Token token) {
+  auto expr = expression();
+  return new UnaryExpr(UnaryOperator::negate, expr);
+}
+
 Expr *Parser::binary(Expr *left, Token token) {
   Expr *right = parse_precedence(
       rules[token.token_type].precedence + 1
@@ -88,8 +93,14 @@ Expr *Parser::binary(Expr *left, Token token) {
 }
 
 Expr *Parser::int_(Token token) {
-  auto value = atoi(token.source.c_str());
-  return new NumberExpr(value);
+  auto value = std::stod(token.source.c_str());
+  return new LiteralExpr(value);
+}
+
+Expr *Parser::literal(Token token) {
+  if (token.token_type == TokenType::true_) return new LiteralExpr(true);
+  if (token.token_type == TokenType::false_) return new LiteralExpr(false);
+  // TODO: Throw exception.
 }
 
 Expr *Parser::parse_ident(Token token) {

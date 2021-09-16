@@ -45,6 +45,12 @@ void VM::run() {
       case Opcode::divide:
         divide();
         break;
+      case Opcode::negate:
+        negate();
+        break;
+      case Opcode::not_:
+        not_();
+        break;
       case Opcode::print:
         print();
         break;
@@ -80,9 +86,18 @@ void VM::divide() {
   push(a / b);
 }
 
+void VM::negate() {
+  auto a = pop();
+  push(-a);
+}
+
+void VM::not_() {
+  // TODO
+}
+
 void VM::print() {
   auto popped = pop();
-  *output << popped;
+  *output << popped << std::endl;
 }
 
 void VM::push(Value value) {
