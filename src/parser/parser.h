@@ -31,11 +31,13 @@ class Parser {
 
   Expr *int_(Token token); // TODO: Rename.
 
+  Expr *string_(Token token); // TODO: Rename.
+
   Expr *literal(Token token);
 
   Token consume();
 
-  Token consume(TokenType token_type, const string &message);
+  Token consume(TokenType token_type, const std::string &message);
 
   bool match(TokenType token_type);
 
@@ -62,21 +64,24 @@ class Parser {
   };
 
   std::map<TokenType, Parselet> rules{
-      {TokenType::minus,         {&Parser::unary, &Parser::binary,      Precedence::term}},
-      {TokenType::plus,          {NULL, &Parser::binary,      Precedence::term}},
-      {TokenType::slash,         {NULL, &Parser::binary,      Precedence::factor}},
-      {TokenType::star,          {NULL, &Parser::binary,      Precedence::factor}},
-      {TokenType::equal,         {NULL, &Parser::binary,      Precedence::none}},
-      {TokenType::bang_equal,    {NULL, &Parser::binary,      Precedence::none}},
-      {TokenType::greater,       {NULL, &Parser::binary,      Precedence::none}},
-      {TokenType::greater_equal, {NULL, &Parser::binary,      Precedence::none}},
-      {TokenType::less,          {NULL, &Parser::binary,      Precedence::none}},
-      {TokenType::less_equal,    {NULL, &Parser::binary,      Precedence::none}},
-      {TokenType::number,        {&Parser::int_,        NULL, Precedence::none}},
-      {TokenType::semicolon,     {NULL,                 NULL, Precedence::none}},
-      {TokenType::identifier,    {&Parser::parse_ident, NULL, Precedence::none}},
-      {TokenType::true_,    {&Parser::literal, NULL, Precedence::none}},
-      {TokenType::false_,    {&Parser::literal, NULL, Precedence::none}},
+      {TokenType::minus,         {&Parser::unary, &Parser::binary, Precedence::term}},
+      {TokenType::plus,          {NULL,           &Parser::binary, Precedence::term}},
+      {TokenType::slash,         {NULL,           &Parser::binary, Precedence::factor}},
+      {TokenType::star,          {NULL,           &Parser::binary, Precedence::factor}},
+      {TokenType::equal,         {NULL,           &Parser::binary, Precedence::none}},
+      {TokenType::equal_equal,   {NULL,           &Parser::binary, Precedence::equality}},
+      {TokenType::bang,          {&Parser::unary, NULL,            Precedence::term}},
+      {TokenType::bang_equal,    {NULL,           &Parser::binary, Precedence::comparison}},
+      {TokenType::greater,       {NULL,           &Parser::binary, Precedence::comparison}},
+      {TokenType::greater_equal, {NULL,           &Parser::binary, Precedence::comparison}},
+      {TokenType::less,          {NULL,           &Parser::binary, Precedence::comparison}},
+      {TokenType::less_equal,    {NULL,           &Parser::binary, Precedence::comparison}},
+      {TokenType::semicolon,     {NULL,                 NULL,      Precedence::none}},
+      {TokenType::identifier,    {&Parser::parse_ident, NULL,      Precedence::none}},
+      {TokenType::true_,         {&Parser::literal,     NULL,      Precedence::none}},
+      {TokenType::false_,        {&Parser::literal,     NULL,      Precedence::none}},
+      {TokenType::number,        {&Parser::int_,        NULL,      Precedence::none}},
+      {TokenType::string,        {&Parser::string_,     NULL,      Precedence::none}},
   };
 
 public:

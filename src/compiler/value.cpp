@@ -25,8 +25,7 @@ Value operator-(const Value& a) {
 }
 
 Value operator!(const Value& a) {
-  // TODO
-  return -std::get<double>(a);
+  return !std::get<bool>(a);
 }
 
 std::ostream &operator<<(std::ostream &os, const Value &value) {
@@ -41,6 +40,9 @@ std::ostream &operator<<(std::ostream &os, const Value &value) {
       } else {
         os << "false";
       }
+    }
+    if constexpr(std::is_same_v<T, std::string>) {
+      os << std::get<std::string>(value);
     }
     // TODO: Throw exception.
   }, value);

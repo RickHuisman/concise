@@ -42,6 +42,12 @@ public:
 
   void not_();
 
+  void equal();
+
+  void greater();
+
+  void less();
+
   void print();
 };
 

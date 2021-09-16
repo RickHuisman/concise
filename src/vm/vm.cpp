@@ -51,6 +51,15 @@ void VM::run() {
       case Opcode::not_:
         not_();
         break;
+      case Opcode::equal:
+        equal();
+        break;
+      case Opcode::greater:
+        greater();
+        break;
+      case Opcode::less:
+        less();
+        break;
       case Opcode::print:
         print();
         break;
@@ -92,7 +101,26 @@ void VM::negate() {
 }
 
 void VM::not_() {
-  // TODO
+  auto a = pop();
+  push(!a);
+}
+
+void VM::equal() {
+  auto b = pop();
+  auto a = pop();
+  push(a == b);
+}
+
+void VM::greater() {
+  auto b = pop();
+  auto a = pop();
+  push(a > b);
+}
+
+void VM::less() {
+  auto b = pop();
+  auto a = pop();
+  push(a < b);
 }
 
 void VM::print() {

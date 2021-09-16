@@ -4,7 +4,7 @@
 #include <variant>
 #include <iostream>
 
-using Value = std::variant<double, bool>;
+using Value = std::variant<double, bool, std::string>;
 
 Value operator+(const Value &a, const Value &b);
 

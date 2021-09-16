@@ -1,4 +1,5 @@
 #include "lexer.h"
+#include <iostream>
 #include <utility>
 #include <vector>
 #include <optional>
@@ -7,6 +8,7 @@ using std::vector;
 
 vector<Token> Lexer::lex() {
   vector<Token> tokens;
+
   while (!is_at_end()) {
     auto token = scan_token();
     if (token.has_value()) {
@@ -50,7 +52,7 @@ std::optional<Token> Lexer::scan_token() {
       // Ignore comments.
       if (check('/')) {
         // TODO: Cleanup.
-        while (peek() != '\n') {
+        while (peek() != '\n' && !is_at_end()) {
           advance();
         }
 
@@ -69,6 +71,7 @@ std::optional<Token> Lexer::scan_token() {
       return make_token(match('=') ? TokenType::less_equal : TokenType::less);
     case '>':
       return make_token(match('=') ? TokenType::greater_equal : TokenType::greater);
+    case '"': return string_();
   }
 
   return make_token(TokenType::error);
@@ -111,8 +114,23 @@ Token Lexer::number() {
   return token;
 }
 
+Token Lexer::string_() {
+  int start = current - 1;
+
+  while (peek() != '"' && !is_at_end()) {
+    advance();
+  }
+
+  // The closing quote.
+  advance();
+
+  auto token_source = source.substr(start, current - start);
+  Token token(TokenType::string, token_source);
+  return token;
+}
+
 Token Lexer::make_token(TokenType token_type) {
-  Token token(token_type, string(1, source[current]));
+  Token token(token_type, string(1, source[current - 1]));
   return token;
 }
 
@@ -125,8 +143,7 @@ void Lexer::skip_whitespace() {
 }
 
 char Lexer::match(char expected) {
-  if (is_at_end()) return false;
-  if (source[current] != expected) return false;
+  if (peek() != expected) return false;
 
   advance();
   return true;

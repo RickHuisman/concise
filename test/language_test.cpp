@@ -46,9 +46,7 @@ std::vector<std::string> parse_expects(std::string source) {
   return results;
 }
 
-void run_test_file(std::string path) {
-  auto source = get_contents(path);
-
+void run_test_file(std::string source) {
   auto expects = parse_expects(source);
 
   auto output = execute(source);
@@ -59,7 +57,7 @@ void run_test_file(std::string path) {
 std::vector<std::string> collect_test_file_paths() {
   std::vector<std::string> paths;
 
-  std::string path = "../../test/tests";
+  std::string path = "../test/tests"; // TODO: Fix path.
   for (const auto &entry: recursive_directory_iterator(path)) {
     if (entry.is_regular_file()) {
       paths.push_back(entry.path());
@@ -73,6 +71,7 @@ TEST(language_tests, run_test_suite) {
   auto test_paths = collect_test_file_paths();
 
   for (const auto &path: test_paths) {
-    run_test_file(path);
+    auto source = get_contents(path);
+    run_test_file(source);
   }
 }

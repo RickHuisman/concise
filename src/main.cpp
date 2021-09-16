@@ -7,8 +7,6 @@
 #include "parser/parser.h"
 #include "compiler/compiler.h"
 
-class com;
-
 int main() {
 //  Chunk chunk;
 //
@@ -34,19 +32,21 @@ int main() {
 //    std::cout << "not equal";
 //  }
 
-//  auto source = "let x = 10;";
-//
-//  Lexer lexer;
-//  auto tokens = lexer.lex(source);
+  // auto source = "print true != false;";
+  auto source = "print \"test\";";
 
-  auto source = "print true;";
+  // Lexer lexer(source);
+  // auto tokens = lexer.lex();
+
+  // for (auto tk : tokens) {
+  //   if (tk.token_type == TokenType::equal_equal) {
+  //     std::cout << "works" << std::endl;
+  //   }
+
+  // }
 
   VM vm;
-
-  std::stringstream buffer;
-  vm.interpret_with_output(source, &buffer);
-
-  std::cout << buffer.rdbuf();
+  vm.interpret(source);
 
   return 0;
 }

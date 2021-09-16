@@ -3,7 +3,9 @@
 
 void UnaryExpr::compile(Compiler *compiler) {
   expr_->compile(compiler);
-  compiler->emit(Opcode::negate);
+
+  if (op_ == UnaryOperator::negate) compiler->emit(Opcode::negate);
+  if (op_ == UnaryOperator::not_) compiler->emit(Opcode::not_);
 }
 
 void BinaryExpr::compile(Compiler *compiler) {
@@ -14,7 +16,21 @@ void BinaryExpr::compile(Compiler *compiler) {
   if (op_ == BinaryOperator::add) compiler->emit(Opcode::add);
   if (op_ == BinaryOperator::divide) compiler->emit(Opcode::divide);
   if (op_ == BinaryOperator::multiply) compiler->emit(Opcode::multiply);
-  // TODO: Add more binary operators.
+  if (op_ == BinaryOperator::equal) compiler->emit(Opcode::equal);
+  if (op_ == BinaryOperator::bang_equal) {
+    compiler->emit(Opcode::equal);
+    compiler->emit(Opcode::not_);
+  }
+  if (op_ == BinaryOperator::greater_than) compiler->emit(Opcode::greater);
+  if (op_ == BinaryOperator::greater_than_equal) {
+    compiler->emit(Opcode::less);
+    compiler->emit(Opcode::not_);
+  }
+  if (op_ == BinaryOperator::less_than) compiler->emit(Opcode::less);
+  if (op_ == BinaryOperator::less_than_equal) {
+    compiler->emit(Opcode::greater);
+    compiler->emit(Opcode::not_);
+  }
 }
 
 void LetAssignExpr::compile(Compiler *compiler) {

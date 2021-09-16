@@ -66,6 +66,8 @@ class Lexer {
 
   Token number();
 
+  Token string_();
+
   Token make_token(TokenType token_type);
 
   void skip_whitespace();

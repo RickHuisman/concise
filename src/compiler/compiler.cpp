@@ -5,7 +5,7 @@
 #include "compiler.h"
 
 Function compile(std::string source) {
-  Lexer lexer(std::move(source));
+  Lexer lexer(source);
   auto tokens = lexer.lex();
 
   Parser parser(tokens);

@@ -69,7 +69,12 @@ Expr *Parser::parse_precedence(int precedence) {
 
 Expr *Parser::unary(Token token) {
   auto expr = expression();
-  return new UnaryExpr(UnaryOperator::negate, expr);
+
+  UnaryOperator op;
+  if (token.token_type == TokenType::minus) op = UnaryOperator::negate;
+  if (token.token_type == TokenType::bang) op = UnaryOperator::not_;
+
+  return new UnaryExpr(op, expr);
 }
 
 Expr *Parser::binary(Expr *left, Token token) {
@@ -82,7 +87,7 @@ Expr *Parser::binary(Expr *left, Token token) {
   if (token.token_type == TokenType::plus) op = BinaryOperator::add;
   if (token.token_type == TokenType::slash) op = BinaryOperator::divide;
   if (token.token_type == TokenType::star) op = BinaryOperator::multiply;
-  if (token.token_type == TokenType::equal) op = BinaryOperator::subtract;
+  if (token.token_type == TokenType::equal_equal) op = BinaryOperator::equal;
   if (token.token_type == TokenType::bang_equal) op = BinaryOperator::bang_equal;
   if (token.token_type == TokenType::greater) op = BinaryOperator::greater_than;
   if (token.token_type == TokenType::greater_equal) op = BinaryOperator::greater_than_equal;
@@ -95,6 +100,10 @@ Expr *Parser::binary(Expr *left, Token token) {
 Expr *Parser::int_(Token token) {
   auto value = std::stod(token.source.c_str());
   return new LiteralExpr(value);
+}
+
+Expr *Parser::string_(Token token) {
+  return new LiteralExpr(token.source);
 }
 
 Expr *Parser::literal(Token token) {
